@@ -97,6 +97,21 @@ const guessLike = {
   }
 }
 
+const source = {
+  list (params) {
+    return axios.get(baseUrl + '/source/list', {params: params})
+  },
+  save (params) {
+    return axios.post(baseUrl + '/source/save', JSON.stringify(params))
+  },
+  del (params) {
+    return axios.get(baseUrl + '/source/del', {params: params})
+  },
+  detail (params) {
+    return axios.get(baseUrl + '/source/detail', {params: params})
+  }
+}
+
 export default {
   goods,
   goodsDetail,
@@ -105,5 +120,6 @@ export default {
   user,
   file,
   guessLike,
-  category
+  category,
+  source
 }

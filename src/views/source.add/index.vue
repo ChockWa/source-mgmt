@@ -19,6 +19,10 @@
       <el-form-item label="内容">
         <div ref='editArea'></div>
       </el-form-item>
+      <el-form-item>
+        <el-button size="small" type="primary" @click="save">新 增</el-button>
+        <el-button size="small" @click="clear">清 空</el-button>
+      </el-form-item>
     </el-form>
   </div>
 </template>
@@ -32,17 +36,50 @@ export default {
     return {
       editor: null,
       sourceInfo: {},
-      sourceTypes: []
+      sourceTypes: [],
+      editorContent: null,
+      sourceId: null
     };
   },
   mounted() {
     this.initEdit();
   },
   methods: {
+    save() {
+      this.$api.source.save(Object.assign(this.sourceInfo, {content: this.editorContent})).then(resp => {
+        if (resp) {
+          if (resp.code === 0) {
+            this.$message.success("保存成功")
+          } else {
+            this.$message.error(resp.msg)
+          }
+        }
+      })
+    },
+    clear() {
+      this.editor.txt.html("");
+    },
+    initData() {
+      this.sourceId = this.$route.query.sourceId
+      if(this.sourceId){
+        this.getSourceDetail()
+      }
+    },
+    getSourceDetail() {
+      this.$api.source.detail({sourceId: this.sourceId}).then(resp => {
+        if(resp){
+          if(resp.code === 0){
+          }else{
+            this.$message.error(resp.msg)
+          }
+        }
+      })
+    },
     initEdit() {
       this.editor = new E(this.$refs.editArea);
       this.editor.customConfig.onchange = html => {
         this.editorContent = html;
+        // console.log(this.editorContent)
         // this.catchData(this.editorContent); // 把这个html通过catchData的方法传入父组件
       };
       // this.editor.customConfig.uploadImgServer = "你的上传图片的接口";
