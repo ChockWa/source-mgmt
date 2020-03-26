@@ -3,8 +3,7 @@
     <el-form ref="form" :model="sourceInfo" label-width="80px">
       <el-form-item label="资源类型">
         <el-select v-model="sourceInfo.type" placeholder="请选择资源类型" size="small">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+          <el-option v-for="(item, index) in sourceTypes" :key="index" label="item.name" value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="标题">
@@ -14,7 +13,7 @@
         <el-input type="textarea" v-model="sourceInfo.description"></el-input>
       </el-form-item>
       <el-form-item label="下载地址">
-        <el-input type="textarea" rows="3" v-model="sourceInfo.description" placeholder="格式: url:code"></el-input>
+        <el-input type="textarea" rows="3" v-model="downLoadInfo" placeholder="格式: url:code|url:code"></el-input>
       </el-form-item>
       <el-form-item label="内容">
         <div ref='editArea'></div>
@@ -38,15 +37,27 @@ export default {
       sourceInfo: {},
       sourceTypes: [],
       editorContent: null,
-      sourceId: null
+      sourceId: null,
+      downloadInfo: ''
     };
+  },
+  created() {
+    this.getSourceTypes()
+    this.initData()
   },
   mounted() {
     this.initEdit();
   },
   methods: {
     save() {
-      this.$api.source.save(Object.assign(this.sourceInfo, {content: this.editorContent})).then(resp => {
+      let downloadInfoMap = {}
+      let downloadInfos = this.downloadInfo.split('|')
+      for(let i in downloadInfos){
+        let downloadItem = downloadInfos[i].split(':')
+        downloadInfoMap[downloadItem[0]] = downloadInfoMap[1]
+      }
+      this.$api.source.save(Object.assign(this.sourceInfo, {content: this.editorContent, downloadInfoMap: downloadInfoMap}))
+      .then(resp => {
         if (resp) {
           if (resp.code === 0) {
             this.$message.success("保存成功")
@@ -59,6 +70,17 @@ export default {
     clear() {
       this.editor.txt.html("");
     },
+    getSourceTypes() {
+      this.$api.source.types().then(resp => {
+        if(resp){
+          if(resp.code === 0){
+            this.sourceTypes = resp.data
+          }else{
+            this.$message.error(resp.msg)
+          }
+        }
+      })
+    },
     initData() {
       this.sourceId = this.$route.query.sourceId
       if(this.sourceId){
@@ -69,6 +91,15 @@ export default {
       this.$api.source.detail({sourceId: this.sourceId}).then(resp => {
         if(resp){
           if(resp.code === 0){
+            this.sourceInfo.type = resp.data.type
+            this.sourceInfo.title = resp.data.title
+            this.sourceInfo.description = resp.data.description
+            this.editor.txt.html(resp.data.content)
+            let downloadInfoMap = resp.data.downloadInfoMap
+            this.downloadInfo = ''
+            Object.keys(downloadInfoMap).forEach(e => {
+              this.downloadInfo = this.downloadInfo + '|' + e + ':' + downloadInfoMap[e]
+            })
           }else{
             this.$message.error(resp.msg)
           }

@@ -109,6 +109,9 @@ const source = {
   },
   detail (params) {
     return axios.get(baseUrl + '/source/detail', {params: params})
+  },
+  types (params) {
+    return axios.get(baseUrl + '/source/types', {params: params})
   }
 }
 
