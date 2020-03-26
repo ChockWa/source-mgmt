@@ -14,7 +14,7 @@
       <el-table-column prop="createTime" header-align="center" align="center" label="创建时间"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="updateHandle(scope.row)">修改</el-button>
+          <el-button type="text" size="small" @click="updateHandle(scope.row.id)">修改</el-button>
           <el-button type="text" size="small" @click="detailHandle(scope.row)">详情</el-button>
           <el-button v-if="scope.row.status === 0" type="text" size="small" @click="deleteHandle(scope.row)">上架</el-button>
           <el-button v-else type="text" size="small" @click="deleteHandle(scope.row)">下架</el-button>
@@ -36,8 +36,33 @@
 <script>
 export default {
   name: 'Source',
-  data() {},
+  data() {
+    return {
+      dataList: [],
+      dataListLoading: false,
+      total: 0,
+      query: {
+        pageSize: 10,
+        pageIndex: 1
+      }
+    }
+  },
+  created() {
+    this.getData()
+  },
   methods: {
+    getData() {
+      this.$api.source.list(this.query).then(resp => {
+        if(resp){
+          if(resp.code === 0){
+            this.dataList = resp.data.records
+            this.total = resp.data.total
+          }else{
+            this.$message.error(resp.msg)
+          }
+        }
+      })
+    },
     deleteHandle(row) {
       this.$api.source.del({sourceId: row.id, status: row.status === 0 ? 1 : 0}).then(resp => {
         if(resp){
@@ -49,6 +74,9 @@ export default {
         }
       })
     }
+  },
+  updateHandle(sourceId) {
+    this.$router.push({name: 'source-add', query:{sourceId: sourceId}})
   },
   addHandle() {
     this.$router.push({name: 'source-add'})
