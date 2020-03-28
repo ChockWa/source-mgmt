@@ -18,9 +18,9 @@ Vue.use(Router)
 const routes = [
   {
     path: '/',
-    // redirect: '/login',
-    name: 'login',
-    component: Login
+    redirect: '/source-list',
+    name: 'source-list',
+    component: SourceList
   },
   {
     path: '/idx',

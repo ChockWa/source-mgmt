@@ -20,7 +20,7 @@
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="updateHandle(scope.row.id)">修改</el-button>
-          <el-button type="text" size="small" @click="detailHandle(scope.row)">详情</el-button>
+          <!-- <el-button type="text" size="small" @click="detailHandle(scope.row)">详情</el-button> -->
           <el-button v-if="scope.row.status === 0" type="text" size="small" @click="updateStatus(scope.row)">上架</el-button>
           <el-button v-else type="text" size="small" @click="updateStatus(scope.row)">下架</el-button>
         </template>
