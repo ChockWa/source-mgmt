@@ -104,14 +104,14 @@ const source = {
   save (params) {
     return axios.post(baseUrl + '/source/save', JSON.stringify(params))
   },
-  del (params) {
-    return axios.get(baseUrl + '/source/del', {params: params})
+  updateStatus (params) {
+    return axios.get(baseUrl + '/source/updateStatus', {params: params})
   },
-  detail (params) {
-    return axios.get(baseUrl + '/source/detail', {params: params})
+  info (params) {
+    return axios.get(baseUrl + '/source/info', {params: params})
   },
   types (params) {
-    return axios.get(baseUrl + '/source/types', {params: params})
+    return axios.get(baseUrl + '/type/list', {params: params})
   }
 }
 

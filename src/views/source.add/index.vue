@@ -2,18 +2,21 @@
   <div class="s_source_add">
     <el-form ref="form" :model="sourceInfo" label-width="80px">
       <el-form-item label="资源类型">
-        <el-select v-model="sourceInfo.type" placeholder="请选择资源类型" size="small">
-          <el-option v-for="(item, index) in sourceTypes" :key="index" label="item.name" value="item.id"></el-option>
+        <el-select v-model="sourceInfo.typeId" placeholder="请选择资源类型" size="small">
+          <el-option v-for="(item, index) in sourceTypes" :key="index" :label="item.description" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="标题">
         <el-input v-model="sourceInfo.title" size="small"></el-input>
       </el-form-item>
       <el-form-item label="描述">
-        <el-input type="textarea" v-model="sourceInfo.description"></el-input>
+        <el-input type="textarea" v-model="sourceInfo.description" rows="8"></el-input>
+      </el-form-item>
+       <el-form-item label="封面">
+        <el-input v-model="sourceInfo.cover" size="small"></el-input>
       </el-form-item>
       <el-form-item label="下载地址">
-        <el-input type="textarea" rows="3" v-model="downLoadInfo" placeholder="格式: url:code|url:code"></el-input>
+        <el-input type="textarea" rows="3" v-model="downloadInfo" placeholder="格式: url:code|url:code"></el-input>
       </el-form-item>
       <el-form-item label="内容">
         <div ref='editArea'></div>
@@ -21,6 +24,7 @@
       <el-form-item>
         <el-button size="small" type="primary" @click="save">新 增</el-button>
         <el-button size="small" @click="clear">清 空</el-button>
+        <el-button size="small" @click="goBack">返 回</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -34,7 +38,12 @@ export default {
   data() {
     return {
       editor: null,
-      sourceInfo: {},
+      sourceInfo: {
+        typeId: "",
+        title: "",
+        description: "",
+        cover: ""
+      },
       sourceTypes: [],
       editorContent: null,
       sourceId: null,
@@ -49,18 +58,14 @@ export default {
     this.initEdit();
   },
   methods: {
-    save() {
-      let downloadInfoMap = {}
-      let downloadInfos = this.downloadInfo.split('|')
-      for(let i in downloadInfos){
-        let downloadItem = downloadInfos[i].split(':')
-        downloadInfoMap[downloadItem[0]] = downloadInfoMap[1]
-      }
-      this.$api.source.save(Object.assign(this.sourceInfo, {content: this.editorContent, downloadInfoMap: downloadInfoMap}))
+    save(){
+      let source = Object.assign(this.sourceInfo, {content: this.editorContent})
+      this.$api.source.save(Object.assign({source: source}, {downloadInfo: this.downloadInfo}))
       .then(resp => {
         if (resp) {
           if (resp.code === 0) {
             this.$message.success("保存成功")
+            this.$router.push({path: '/source-list'})
           } else {
             this.$message.error(resp.msg)
           }
@@ -70,11 +75,14 @@ export default {
     clear() {
       this.editor.txt.html("");
     },
+    goBack() {
+      this.$router.push({path: '/source-list'})
+    },
     getSourceTypes() {
       this.$api.source.types().then(resp => {
         if(resp){
           if(resp.code === 0){
-            this.sourceTypes = resp.data
+            this.sourceTypes = resp.data.list
           }else{
             this.$message.error(resp.msg)
           }
@@ -88,18 +96,16 @@ export default {
       }
     },
     getSourceDetail() {
-      this.$api.source.detail({sourceId: this.sourceId}).then(resp => {
+      this.$api.source.info({sourceId: this.sourceId}).then(resp => {
         if(resp){
           if(resp.code === 0){
-            this.sourceInfo.type = resp.data.type
-            this.sourceInfo.title = resp.data.title
-            this.sourceInfo.description = resp.data.description
-            this.editor.txt.html(resp.data.content)
-            let downloadInfoMap = resp.data.downloadInfoMap
-            this.downloadInfo = ''
-            Object.keys(downloadInfoMap).forEach(e => {
-              this.downloadInfo = this.downloadInfo + '|' + e + ':' + downloadInfoMap[e]
-            })
+            // this.sourceInfo.typeId = resp.data.source.typeId
+            // this.sourceInfo.title = resp.data.source.title
+            // this.sourceInfo.cover = resp.data.source.cover
+            // this.sourceInfo.description = resp.data.source.description
+            Object.assign(this.sourceInfo, resp.data.source)
+            this.editor.txt.html(resp.data.source.content)
+            this.downloadInfo = resp.data.downloadInfo
           }else{
             this.$message.error(resp.msg)
           }

@@ -6,6 +6,7 @@ import Sku from './../views/sku'
 import Goods from './../views/goods'
 import GuessLike from './../views/guess.like'
 import SourceAdd from './../views/source.add'
+import SourceList from './../views/source.list'
 // import ue from './../views/editor/editor'
 import Index from './../index'
 import Login from './../views/login/login'
@@ -39,7 +40,7 @@ const routes = [
       // {path: '/category', component: Category, name: '分类', class: 'fa-plug'},
       // {path: '/sku', component: Sku, name: '规格', class: 'fa-plug'},
       // {path: '/goods', component: Goods, name: '商品', class: 'fa-plug'},
-      // {path: '/guess-like', component: GuessLike, name: '猜你喜欢', class: 'fa-plug'},
+      {path: '/source-list', component: SourceList, name: '资源列表', class: 'fa-plug'},
       {path: '/source-add', component: SourceAdd, name: '新增资源', class: 'fa-plug'}
     ]
   }
