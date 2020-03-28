@@ -112,6 +112,9 @@ const source = {
   },
   types (params) {
     return axios.get(baseUrl + '/type/list', {params: params})
+  },
+  saveType(params) {
+    return axios.get(baseUrl + '/type/save', {params: params})
   }
 }
 

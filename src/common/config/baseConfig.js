@@ -1,7 +1,6 @@
 const config = {
-  baseUrl: 'http://localhost:16989',
-  // baseUrl: 'https://www.24beauties.xyz/api',
-  // dns: 'https://www.24beauties.xyz'
+  baseUrl: 'http://106.12.161.232:16989'
+  // baseUrl: 'http://localhost:16989'
 }
 
 export default config

@@ -6,11 +6,11 @@
           <el-option v-for="(item, index) in sourceTypes" :key="index" :label="item.description" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="标题">
+      <el-form-item label="标题" maxlength="35">
         <el-input v-model="sourceInfo.title" size="small"></el-input>
       </el-form-item>
       <el-form-item label="描述">
-        <el-input type="textarea" v-model="sourceInfo.description" rows="8"></el-input>
+        <el-input type="textarea" v-model="sourceInfo.description" rows="8" maxlength="500"></el-input>
       </el-form-item>
        <el-form-item label="封面">
         <el-input v-model="sourceInfo.cover" size="small"></el-input>
@@ -22,8 +22,8 @@
         <div ref='editArea'></div>
       </el-form-item>
       <el-form-item>
-        <el-button size="small" type="primary" @click="save">新 增</el-button>
-        <el-button size="small" @click="clear">清 空</el-button>
+        <el-button size="small" type="primary" @click="save">保 存</el-button>
+        <el-button size="small" @click="clear">清空富文本</el-button>
         <el-button size="small" @click="goBack">返 回</el-button>
       </el-form-item>
     </el-form>
