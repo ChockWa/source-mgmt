@@ -16,7 +16,7 @@
         <el-input v-model="sourceInfo.cover" size="small"></el-input>
       </el-form-item>
       <el-form-item label="下载地址">
-        <el-input type="textarea" rows="3" v-model="downloadInfo" placeholder="格式: url:code|url:code"></el-input>
+        <el-input type="textarea" rows="3" v-model="downloadInfo" placeholder="格式: url|code;url|code"></el-input>
       </el-form-item>
       <el-form-item label="内容">
         <div ref='editArea'></div>
