@@ -72,6 +72,9 @@ export default {
       });
     },
     sourceTypeFormat(row) {
+      if (!row.typeId) {
+        return ''
+      }
       return this.sourceTypes.filter(e => e.id === row.typeId)[0].description
     },
     statusFormat(row) {
