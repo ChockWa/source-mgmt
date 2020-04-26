@@ -2,7 +2,13 @@
   <div class="s_source">
     <el-form :inline="true">
       <el-form-item>
-        <el-button type="primary" @click="addHandle">新增</el-button>
+        <el-input v-model="query.title" size='small' style="width:200px;" clearable placeholder="标题"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="getData" size='small'>查询</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="addHandle" size='small'>新增</el-button>
       </el-form-item>
     </el-form>
     <el-table :data="dataList" border v-loading="dataListLoading" style="width: 100%;">
@@ -49,7 +55,8 @@ export default {
       total: 0,
       query: {
         pageSize: 10,
-        pageIndex: 1
+        pageIndex: 1,
+        title: ''
       },
       sourceTypes: []
     };
@@ -119,7 +126,7 @@ export default {
       this.getData()
     },
     currentChangeHandle(pageIndex) {
-      this.pageIndex = pageIndex
+      this.query.pageIndex = pageIndex
       this.getData()
     }
   }
