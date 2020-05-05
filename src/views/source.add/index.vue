@@ -6,6 +6,21 @@
           <el-option v-for="(item, index) in sourceTypes" :key="index" :label="item.description" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="资源标签">
+        <el-select
+    v-model="sourceInfo.tagIds"
+    multiple
+    collapse-tags
+    size="small"
+    placeholder="请选择">
+    <el-option
+      v-for="item in tagList"
+      :key="item.id"
+      :label="item.name"
+      :value="item.id">
+    </el-option>
+  </el-select>
+      </el-form-item>
       <el-form-item label="标题" maxlength="35">
         <el-input v-model="sourceInfo.title" size="small"></el-input>
       </el-form-item>
@@ -47,70 +62,87 @@ export default {
       sourceTypes: [],
       editorContent: null,
       sourceId: null,
-      downloadInfo: ''
+      downloadInfo: "",
+      tagList: []
     };
   },
   created() {
-    this.getSourceTypes()
-    this.initData()
+    this.getSourceTypes();
+    this.getTagList();
+    this.initData();
   },
   mounted() {
     this.initEdit();
   },
   methods: {
-    save(){
-      let source = Object.assign(this.sourceInfo, {content: this.editorContent})
-      this.$api.source.save(Object.assign({source: source}, {downloadInfo: this.downloadInfo}))
-      .then(resp => {
-        if (resp) {
-          if (resp.code === 0) {
-            this.$message.success("保存成功")
-            this.$router.push({path: '/source-list'})
-          } else {
-            this.$message.error(resp.msg)
+    save() {
+      let source = Object.assign(this.sourceInfo, {
+        content: this.editorContent
+      });
+      this.$api.source
+        .save(
+          Object.assign({ source: source }, { downloadInfo: this.downloadInfo })
+        )
+        .then(resp => {
+          if (resp) {
+            if (resp.code === 0) {
+              this.$message.success("保存成功");
+              this.$router.push({ path: "/source-list" });
+            } else {
+              this.$message.error(resp.msg);
+            }
           }
+        });
+    },
+    async getTagList() {
+      const resp = await this.$api.tag.list();
+      if (resp) {
+        if (resp.code === 0) {
+          this.tagList = resp.data.list;
+        } else {
+          this.$message.error(resp.msg);
         }
-      })
+      }
     },
     clear() {
       this.editor.txt.html("");
     },
     goBack() {
-      this.$router.push({path: '/source-list'})
+      this.$router.push({ path: "/source-list" });
     },
     getSourceTypes() {
       this.$api.source.types().then(resp => {
-        if(resp){
-          if(resp.code === 0){
-            this.sourceTypes = resp.data.list
-          }else{
-            this.$message.error(resp.msg)
+        if (resp) {
+          if (resp.code === 0) {
+            this.sourceTypes = resp.data.list;
+          } else {
+            this.$message.error(resp.msg);
           }
         }
-      })
+      });
     },
     initData() {
-      this.sourceId = this.$route.query.sourceId
-      if(this.sourceId){
-        this.getSourceDetail()
+      this.sourceId = this.$route.query.sourceId;
+      if (this.sourceId) {
+        this.getSourceDetail();
       }
     },
     getSourceDetail() {
-      this.$api.source.info({sourceId: this.sourceId}).then(resp => {
-        if(resp){
-          if(resp.code === 0){
+      this.$api.source.info({ sourceId: this.sourceId }).then(resp => {
+        if (resp) {
+          if (resp.code === 0) {
             // this.sourceInfo.typeId = resp.data.source.typeId
             // this.sourceInfo.title = resp.data.source.title
             // this.sourceInfo.cover = resp.data.source.cover
             // this.sourceInfo.description = resp.data.source.description
-            Object.assign(this.sourceInfo, resp.data.source)
-            this.editor.txt.html(resp.data.source.content)
-            this.downloadInfo = resp.data.downloadInfo
-          }else{
-            this.$message.error(resp.msg)
+            Object.assign(this.sourceInfo, resp.data.source);
+            this.editor.txt.html(resp.data.source.content);
+            this.downloadInfo = resp.data.downloadInfo;
+          } else {
+            this.$message.error(resp.msg);
           }
         }
-      })
+      });
     },
     initEdit() {
       this.editor = new E(this.$refs.editArea);

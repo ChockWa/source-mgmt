@@ -8,6 +8,7 @@ import GuessLike from './../views/guess.like'
 import SourceAdd from './../views/source.add'
 import SourceList from './../views/source.list'
 import TypeAdd from './../views/source.type.add'
+import TagList from './../views/tag'
 // import ue from './../views/editor/editor'
 import Index from './../index'
 import Login from './../views/login/login'
@@ -43,7 +44,8 @@ const routes = [
       // {path: '/goods', component: Goods, name: '商品', class: 'fa-plug'},
       {path: '/source-list', component: SourceList, name: '资源列表', class: 'fa-plug'},
       {path: '/source-add', component: SourceAdd, name: '新增资源', class: 'fa-plug'},
-      {path: '/type-add', component: TypeAdd, name: '新增类型', class: 'fa-plug'}
+      {path: '/type-add', component: TypeAdd, name: '新增类型', class: 'fa-plug'},
+      {path: '/tag', component: TagList, name: '标签列表', class: 'fa-plug'}
     ]
   }
 ]

@@ -118,6 +118,24 @@ const source = {
   }
 }
 
+const tag = {
+  list (params) {
+    return axios.get(baseUrl + '/tag/list', {params: params})
+  },
+  add (params) {
+    return axios.get(baseUrl + '/tag/add', {params: params})
+  },
+  update (params) {
+    return axios.get(baseUrl + '/tag/update', {params: params})
+  },
+  delete (params) {
+    return axios.get(baseUrl + '/tag/delete', {params: params})
+  },
+  updateStatus (params) {
+    return axios.get(baseUrl + '/tag/updateStatus', {params: params})
+  }
+}
+
 export default {
   goods,
   goodsDetail,
@@ -127,5 +145,6 @@ export default {
   file,
   guessLike,
   category,
-  source
+  source,
+  tag
 }
