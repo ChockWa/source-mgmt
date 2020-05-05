@@ -95,7 +95,7 @@ export default {
         });
     },
     async getTagList() {
-      const resp = await this.$api.tag.list();
+      const resp = await this.$api.tag.list({status: 1});
       if (resp) {
         if (resp.code === 0) {
           this.tagList = resp.data.list;
