@@ -5,6 +5,16 @@
         <el-input v-model="query.title" size='small' style="width:200px;" clearable placeholder="标题"></el-input>
       </el-form-item>
       <el-form-item>
+        <el-select v-model="query.tagId" placeholder="请选择标签类型" size="small" clearable>
+          <el-option v-for="(item, index) in tagList" :key="index" :label="item.name" :value="item.id"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-form-item>
+        <el-select v-model="query.typeId" placeholder="请选择资源类型" size="small" clearable>
+          <el-option v-for="(item, index) in sourceTypes" :key="index" :label="item.description" :value="item.id"></el-option>
+        </el-select>
+      </el-form-item>
         <el-button type="primary" @click="getData" size='small'>查询</el-button>
       </el-form-item>
       <el-form-item>
@@ -58,11 +68,13 @@ export default {
         pageIndex: 1,
         title: ''
       },
-      sourceTypes: []
+      sourceTypes: [],
+      tagList: []
     };
   },
   created() {
     this.getSourceTypes()
+    this.getTagList()
     this.getData();
   },
   methods: {
@@ -72,6 +84,27 @@ export default {
           if (resp.code === 0) {
             this.dataList = resp.data.records;
             this.total = resp.data.total;
+          } else {
+            this.$message.error(resp.msg);
+          }
+        }
+      });
+    },
+    async getTagList() {
+      const resp = await this.$api.tag.list();
+      if (resp) {
+        if (resp.code === 0) {
+          this.tagList = resp.data.list;
+        } else {
+          this.$message.error(resp.msg);
+        }
+      }
+    },
+    getSourceTypes() {
+      this.$api.source.types().then(resp => {
+        if (resp) {
+          if (resp.code === 0) {
+            this.sourceTypes = resp.data.list;
           } else {
             this.$message.error(resp.msg);
           }
@@ -103,17 +136,6 @@ export default {
             }
           }
         });
-    },
-    getSourceTypes() {
-      this.$api.source.types().then(resp => {
-        if(resp){
-          if(resp.code === 0){
-            this.sourceTypes = resp.data.list
-          }else{
-            this.$message.error(resp.msg)
-          }
-        }
-      })
     },
     updateHandle(sourceId) {
       this.$router.push({ path: "/source-add", query: { sourceId: sourceId } });
